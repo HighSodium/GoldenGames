@@ -5,14 +5,17 @@ using UnityEngine;
 public class RunWindows : MonoBehaviour
 {
     public GameObject selectedWindow;
+    public GameObject[] windowsToChooseFrom;
     public Material fireMat;
     public Material startingMat;
     public int score = 0;
+    public float windowTime;
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("WindowSelector", 1, Random.Range(2, 4));
+        windowTime = Random.Range(2, 4);
+        InvokeRepeating("WindowSelector", 1, windowTime);
         
        
     }
@@ -21,46 +24,24 @@ public class RunWindows : MonoBehaviour
     void Update()
     {
         
+        Debug.Log(score);
     }
 
     void WindowSelector()
     {
-        selectedWindow = this.gameObject.transform.GetChild(Random.Range(1, 4)).gameObject;
+        selectedWindow = windowsToChooseFrom[(Random.Range(0, 4))];
         selectedWindow.GetComponent<Renderer>().material = fireMat;        
         selectedWindow.tag = "CurWindow";
+        Invoke("ResetWindow", windowTime);
     }
 
-    
-       
-       
-/*
-        yield return new WaitForSeconds(waitTime);
+    void ResetWindow()
+    {
         selectedWindow.GetComponent<Renderer>().material = startingMat;
         selectedWindow.tag = "Window";
-
-
-    }*/
-    
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(this.gameObject.tag + "Collided with:" + collision.gameObject.tag);
-        score++;
-       
     }
-    
-    /*
-    private void OnTriggerEnter(Collider other)
-    {
-        
-      
-        if(other.gameObject.tag == selectedWindow.tag)
-        {
-            Debug.Log(gameObject.tag + "Collided with:" + other.gameObject.tag);
-            score++;
-        }
        
-    }
-    */
+       
 
 
 
