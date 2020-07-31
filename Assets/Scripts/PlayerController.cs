@@ -21,7 +21,12 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip ("The amount the pee spreads. (Higher is more)")]
     public float peeSpread = 50f;
+
+    [Tooltip ("Seconds until particle is destroyed.")]
     public float killDelay = 3f;
+
+    [Tooltip("How often pee is created. (In milliseconds)")]
+    public float peeDelay = 30;
 
 
 
@@ -79,7 +84,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!IsInvoking("SpawnPeeWithForce"))
                 //InvokeRepeating("SpawnPeeWithForce", Random.Range(.2f, .3f), Random.Range(0, .05f));
-                InvokeRepeating("SpawnPeeWithForce", 0, 0.03f);
+                InvokeRepeating("SpawnPeeWithForce", 0, peeDelay / 1000);
         }
         else
         {
