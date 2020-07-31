@@ -6,31 +6,35 @@ public class PeeCam : MonoBehaviour
 {
     public GameObject peeObject;
     public float peeSpread = 50f;
+    public float killDelay = 3f;
 
-    GameObject spawnedPee;
-    private bool firePee;
+    public GameObject spawnedPee;
+
     
     // Start is called before the first frame update
     void Start()
     {
-        firePee = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("a"))
+        if (Input.GetKey("space"))
         {
-            if(!IsInvoking("spawnPeeWithForce"))
-                InvokeRepeating("spawnPeeWithForce", 0,0.03f);
+            if(!IsInvoking("SpawnPeeWithForce"))
+                InvokeRepeating("SpawnPeeWithForce", 0,0.03f);
         }
         else
         {
-            CancelInvoke("spawnPeeWithForce");
+            CancelInvoke("SpawnPeeWithForce");
         }
     }
     
-    void spawnPeeWithForce()
+    /// <summary>
+    /// Create pee and set a force
+    /// </summary>
+    void SpawnPeeWithForce()
     {
         
         Transform t = this.transform;
@@ -45,6 +49,7 @@ public class PeeCam : MonoBehaviour
         Vector3 peeOrig = t.position + t.forward*0.5f + t.right; //position of spawn
 
         spawnedPee = Instantiate(peeObject, peeOrig, Quaternion.identity);
+        Destroy(spawnedPee, killDelay); // remove after a set amount
 
         float mass = spawnedPee.GetComponent<Rigidbody>().mass;
         spawnedPee.GetComponent<Rigidbody>().AddForce(peeVec*mass);

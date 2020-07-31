@@ -12,19 +12,23 @@ public class PlayerController : MonoBehaviour
 
     
     public GameObject currentlySelectedWindow;
-    private Vector3 peePos;
-    public GameObject peeDrop;
     private GameObject spawnedPee;
     private GameObject playerGoal;
-    public  Vector3 peeDirection;
-    
+    private  Vector3 peeDirection;
+    private Vector3 peePos;
+
+    public GameObject peeObject;
+
+    [Tooltip ("The amount the pee spreads. (Higher is more)")]
+    public float peeSpread = 50f;
+    public float killDelay = 3f;
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         peePos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
-        
-       
         
     }
 
@@ -73,33 +77,40 @@ public class PlayerController : MonoBehaviour
         //PEE INput
         if (Input.GetButton("Jump"))
         {
-            if (!IsInvoking("SpawnPee"))
-            {
-
-
-                InvokeRepeating("SpawnPee", Random.Range(.2f, .3f), Random.Range(0, .05f));
-            }
-            
+            if (!IsInvoking("SpawnPeeWithForce"))
+                //InvokeRepeating("SpawnPeeWithForce", Random.Range(.2f, .3f), Random.Range(0, .05f));
+                InvokeRepeating("SpawnPeeWithForce", 0, 0.03f);
         }
-        else if (Input.GetKeyUp(KeyCode.Space))
+        else
         {
             CancelInvoke();
         }
 
+
         
 
 
     }
 
-    void SpawnPee()
+    void SpawnPeeWithForce()
     {
 
-        spawnedPee = Instantiate(peeDrop, peePos, transform.rotation);
-        
-        spawnedPee.GetComponent<Rigidbody>().AddForce(peeDirection *2, ForceMode.Impulse);
-      
+        Transform t = this.transform;
+
+        //force vector
+        Vector3 peeVec =
+            t.position +
+            t.forward * 2000 +
+            (t.right * Random.Range(-peeSpread, peeSpread)) +
+            (t.up * Random.Range(-peeSpread, peeSpread));
+
+        Vector3 peeOrig = t.position + t.forward * 0.5f + t.right; //position of spawn
+
+        spawnedPee = Instantiate(peeObject, peeOrig, Quaternion.identity);
+        Destroy(spawnedPee, killDelay); // remove after a set amount
+
+        float mass = spawnedPee.GetComponent<Rigidbody>().mass;
+        spawnedPee.GetComponent<Rigidbody>().AddForce(peeVec * mass);
     }
-
-
 }
     
